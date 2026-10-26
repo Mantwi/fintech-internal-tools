@@ -39,7 +39,7 @@ export default async function KycQueuePage({ searchParams }: { searchParams: Sea
   return (
     <>
       <PageHeader title="KYC Review Queue" subtitle="Customer identity-verification cases awaiting review." />
-      <form className="filters" method="get">
+      <form key={JSON.stringify(filters)} className="filters" method="get">
         <input className="input" type="search" name="q" placeholder="Search customer name" defaultValue={filters.q} />
         <select className="select" name="status" defaultValue={filters.status ?? ""}>
           <option value="">All statuses</option>

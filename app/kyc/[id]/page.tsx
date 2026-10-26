@@ -22,9 +22,10 @@ function describeChanges(changes: CaseDetail["history"][number]["changes"]): str
 
 export default async function CaseDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const viewerId = await getDemoUserIdFromCookies();
   let kycCase: CaseDetail;
   try {
-    kycCase = await getCase(await getDemoUserIdFromCookies(), id);
+    kycCase = await getCase(viewerId, id);
   } catch (error) {
     return (
       <>
@@ -51,6 +52,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ id:
               <dt>Customer name</dt>
               <dd>{kycCase.customerName}</dd>
               <SensitiveFields
+                key={viewerId}
                 caseId={kycCase.id}
                 maskedSsn={kycCase.ssn}
                 maskedDob={kycCase.dateOfBirth}
@@ -87,7 +89,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ id:
           </Card>
 
           <Card title="Review notes">
-            {kycCase.allowedActions.includes("ADD_NOTE") && <NoteForm caseId={kycCase.id} />}
+            {kycCase.allowedActions.includes("ADD_NOTE") && <NoteForm key={viewerId} caseId={kycCase.id} />}
             {kycCase.notes.length === 0 ? (
               <p className="muted">No notes yet.</p>
             ) : (
@@ -107,7 +109,7 @@ export default async function CaseDetailPage({ params }: { params: Promise<{ id:
 
         <div className="stack">
           <Card title="Actions">
-            <CaseActions caseId={kycCase.id} allowed={kycCase.allowedActions} />
+            <CaseActions key={viewerId} caseId={kycCase.id} allowed={kycCase.allowedActions} />
           </Card>
           <Card title="Case history">
             {kycCase.history.length === 0 ? (
